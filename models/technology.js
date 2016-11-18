@@ -11,16 +11,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(30),
       allowNull: false
     },
-    idUser: {
-      type: DataTypes.INTEGER(6),
-      allowNull: false,
-      unique: true
-    },
-    idProject: {
-      type: DataTypes.INTEGER(6),
-      allowNull: false,
-      unique: true
-    },
     deleted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
@@ -29,13 +19,11 @@ module.exports = function(sequelize, DataTypes) {
 , {    updatedAt: 'created_on',
        createdAt: 'updated_on',
        tableName: 'technology',
-       
        classMethods: {
-          associate: function(models) {
-              models.Technology.belongsToMany(models.User,  {through: 'UserTechnology'});
-          }
-        },
-            
+        associate: function(models) {
+         models.Technology.hasMany(models.TechnologyUser, { as: 'technologyUsers'})
+        }
+       }
     });
 
   return Technology;
