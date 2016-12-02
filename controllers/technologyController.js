@@ -19,9 +19,18 @@ module.exports = function(app) {
         },
 
         delete : function(req, res){
-            Technology.destroy({where: {id: req.params.id}}).then(function(){
+
+          Technology.findOne({where: {id: req.params.id}}).then(function(technology){
+            if(technology){
+              technology.updateAttributes({deleted: true}).then(function(technology){
                 technologyDeleted(res);
-            });
+              }).catch(function(error){
+                errorDeletingTechnology(res, error);
+              });
+            }else{
+              technologyNotFound(res);
+            }
+          });
         },
 
         update: function(req, res){
@@ -73,6 +82,10 @@ module.exports = function(app) {
 
     var errorCreatingTechnology = function(res, err){
         buildResponse(res, 500, 'Technology not Created', null, err);
+    };
+
+    var errorDeletingTechnology = function(res, err){
+        buildResponse(res, 500, 'Technology not Deleted', null, err);
     };
 
     var technologyUpdated = function(technology, res){
